@@ -1,0 +1,43 @@
+<include file="Index/header"/>
+<style type="text/css">
+    /*#more{margin:10px auto;width: 560px;  border: 1px solid #999;}               */
+    /*.single_item{padding: 20px; border-bottom: 1px dotted #d3d3d3;}*/
+    .more_loader_spinner{width:20px; height:20px; margin:10px auto; background: url("__PUBLIC__/Images/loader.gif") no-repeat;}
+</style>
+<div class="container middle marketing">
+    <div class="row featurette">
+        <div class="col-sm-9 blog-main">
+            <div class="blog-post article">
+
+                <div class="row" style="margin-left:5px;margin-right:5px;word-break:break-all;">
+                    <div class="col-lg-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-content">
+                                <h2>相关搜索结果约&nbsp;<span>{$count}</span>&nbsp;个</h2>
+
+                                <foreach name="article" item="v">
+                                    <div class="single_item">
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="search-result">
+                                            <h3><a href="{:U('Home/Article/article_detail',array('arid'=>$v['arid']))}">{$v.title}</a></h3>
+                                            <small>
+                                                <i class="fa fa-clock-o"></i>&nbsp;
+                                                <span><?php echo date("Y年 n月 j日",$v['time'])?></span>&nbsp;&nbsp;&nbsp;
+                                                <i class="fa fa-bookmark-o"></i>&nbsp;
+                                                <span>{$v.typename}</span>
+                                            </small>
+                                            <p>{$v.describe}</p>
+                                        </div>
+                                    </div>
+                                </foreach>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="Index/sidebar"/>
+    </div>
+</div><!-- /.container -->
+
+<include file="Index/footer"/>

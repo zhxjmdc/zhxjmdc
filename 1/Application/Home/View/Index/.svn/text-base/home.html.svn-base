@@ -1,0 +1,55 @@
+<include file="Index/header"/>
+<style type="text/css">
+  @media screen and (max-width: 768px){
+    .page-count {
+      display: inline;
+    }
+  }
+</style>
+  <div class="container middle marketing home">
+      <div class="row featurette">
+        <div class="col-sm-9 blog-main">
+          <!-- 3d轮播  -->
+          <div class="blog-post pic-play">
+            <div class="swiper-container">
+              <div class="swiper-wrapper">
+                  <div class="swiper-slide bg1"></div>
+                  <div class="swiper-slide bg2"></div>
+                  <div class="swiper-slide bg3"></div>
+              </div>
+              <div class="swiper-pagination"></div>
+            </div>
+          </div>
+
+          <foreach name='article' item='v'>
+          <div class="row blog-article">
+            <div class="blog-article-tipsss">
+              <h2 class="blog-post-title home-title">
+                <a href="{:U('Home/Article/article_detail',array('arid'=>$v['arid']))}">{$v.title}</a>
+              </h2>
+              <div class="col-xs-12 col-sm-4 col-md-3 tips"><div><i class="fa fa-user"></i>By {$v.author}</div></div>
+              <div class="col-xs-12 col-sm-5 col-md-4 tips"><div><i class="fa fa-clock-o"></i><?php echo date("F j Y",$v['time']);?></div></div>
+              <div class="col-xs-12 col-sm-3 col-md-3 tips"><div><i class="fa fa-tag"></i>{$v.typename}</div></div>
+            </div>
+          </div>
+
+          <div class="row blog-article-content featurette">
+            {$v.path}
+            <div class="home-article-content">
+              <p>{$v.describe}......</p>
+              <p class="read-detail">
+                <span><a href="{:U('Home/Article/article_detail',array('arid'=>$v['arid']))}">阅读全文</a></span>
+              </p>
+            </div>
+            <hr class="hr1">
+            <div class="col-xs-6 col-sm-4 col-md-2 tips"><div><i class="fa fa-commenting-o"></i>({$v.comment_count})</div></div>
+            <div class="col-xs-6 col-sm-4 col-md-2 tips"><div><i class="fa fa fa-eye"></i>({$v.browse_count})</div></div>
+            <div class="col-xs-12 col-sm-4 col-md-2 tips"><div><i class="fa fa-share-alt"></i>SHARE</div></div>
+          </div>
+          </foreach>
+          <div class="page">{$Page}</div>
+        </div>
+        <include file="Index/sidebar"/>
+      </div>
+  </div><!-- /.container -->
+<include file="Index/footer"/>

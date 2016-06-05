@@ -1,0 +1,42 @@
+<include file="Index/header"/>
+<style type="text/css">
+  @media screen and (max-width: 776px){
+     #fontzoom>img{
+      margin-top: 0px!important;
+     }
+  }
+</style>
+<div class="life">
+  <!-- 顶部图片 -->
+  <div id="fontzoom" class="life-bg">
+    <img src="__PUBLIC__/Images/life_bg1.jpg">
+  </div>
+
+  <div class="container marketing">
+      <foreach name="jotting" item="v">
+          <hr class="featurette-divider">
+          <div class="row featurette">
+              <div class="col-md-7">
+                  <h3 class="featurette-heading"><?php echo date('Y-m-d H:i:s',$v['0']['time'])?></h3>
+                  <p class="lead">{$v['0']['content']}</p>
+              </div>
+              <div class="col-md-2"></div>
+              <div class="col-md-3">{$v['0']['path']}</div>
+          </div>
+
+          <hr class="featurette-divider">
+          <div class="row featurette">
+              <div class="col-md-7 col-md-push-3">
+                  <h3 class="featurette-heading"><?php if(!empty($v['1']['time'])){ echo date('Y-m-d H:i:s',$v['1']['time']);}?></h3>
+                  <p class="lead">{$v['1']['content']}</p>
+              </div>
+              <div class="col-md-3 col-md-pull-7">{$v['1']['path']}</div>
+          </div>
+      </foreach>
+      <div class="page">{$Page}</div>
+      <div class="row">
+        <div class="col-sm-12 life-content-footer"></div>
+      </div>
+  </div>
+</div>
+<include file="Index/footer"/>

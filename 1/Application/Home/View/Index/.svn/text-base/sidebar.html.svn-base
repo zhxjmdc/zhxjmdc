@@ -1,0 +1,79 @@
+<div class="col-sm-3">
+  <div class="sidebar-module sidebar-box1">
+      <h1>救命稻草</h1>
+      <img alt="image" class="img-circle" style="border: 3px solid #FFF;" src="__PUBLIC__/Images/a8.jpg">
+      <div class="sidebar-blog">
+        <a class="btn btn-xs btn-success"><i class="fa fa-signal"></i>&nbsp;文章&nbsp;{$total}</a>
+        <a class="btn btn-xs btn-primary"><i class="fa fa-weixin"></i>&nbsp;ZhxJmdc</a>
+      </div>
+  </div>
+
+  <!-- <div class="sidebar-module sidebar-box2">
+    <h3>
+      <i class="fa fa-search"></i>
+      Find...
+    </h3>
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Search for...">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+      </span>
+    </div>
+  </div> -->
+
+  <div class="sidebar-module sidebar-box3">
+      <h3><i class="fa fa-map-signs"></i>Recent</h3>
+      <ol class="list-unstyled sidebar-box3-list">
+        <li>
+          <a href="{:U('Home/Article/article_detail',array('arid' =>$recent['0']['arid']))}">
+            <span class="badge">1</span>{$recent['0']['title']}
+          </a>
+        </li>
+        <li>
+          <a href="{:U('Home/Article/article_detail',array('arid' =>$recent['1']['arid']))}">
+            <span class="badge badge2">2</span>{$recent['1']['title']}
+          </a>
+        </li>
+        <li>
+          <a href="{:U('Home/Article/article_detail',array('arid' =>$recent['2']['arid']))}">
+            <span class="badge badge3">3</span>{$recent['2']['title']}
+          </a>
+        </li>
+        <li>
+          <a href="{:U('Home/Article/article_detail',array('arid' =>$recent['3']['arid']))}">
+            <span class="badge badge4">4</span>{$recent['3']['title']}
+          </a>
+        </li>
+        <li>
+          <a href="{:U('Home/Article/article_detail',array('arid' =>$recent['4']['arid']))}">
+            <span class="badge badge5">5</span>{$recent['4']['title']}
+          </a>
+        </li>
+        <li>
+          <a href="{:U('Home/Article/article_detail',array('arid' =>$recent['5']['arid']))}">
+            <span class="badge badge6">6</span>{$recent['5']['title']}
+          </a>
+        </li>
+      </ol>
+  </div>
+  
+  <div class="sidebar-module sidebar-box4">
+    <h3><i class="fa fa-tags"></i>Tags</h3>
+    <ol class="list-unstyled sidebar-box4-list">
+      <foreach name="tags" item="v">
+        <li>
+          <a href="{:U('Home/Index/article',array('aid'=>$v['aid']))}"><span>{$v.typename}({$v.article_count})</span></a>
+        </li>
+      </foreach>        
+    </ol>
+  </div>
+
+  <div class="sidebar-module sidebar-box5">
+    <h3><i class="fa fa-pencil"></i>Personal</h3>
+    <ol class="list-unstyled sidebar-box5-list">
+      <li>
+        ......................
+      </li>
+    </ol>
+  </div>
+</div><!-- /.blog-sidebar -->

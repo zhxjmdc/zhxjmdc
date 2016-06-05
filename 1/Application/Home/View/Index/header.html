@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,user-scalable=no, minimum-scale=1.0, initial-scale=1.0,target-densitydpi=low-dpi" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="__PUBLIC__/Images/favicon.ico">
+<title></title>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="http://apps.bdimg.com/libs/html5shiv/3.7/html5shiv.min.js"></script>
+  <script src="http://apps.bdimg.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+    <!-- Bootstrap core CSS -->
+    <link href="__PUBLIC__/Js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/Js/swiper/css/swiper.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/Js/font-awesome/css/font-awesome.min.css" rel="stylesheet" >
+
+    <!-- Custom styles for this template -->
+    <link href="__PUBLIC__/Css/header.css" rel="stylesheet">
+    <link href="__PUBLIC__/Css/home.css" rel="stylesheet">
+    <link href="__PUBLIC__/Css/footer.css" rel="stylesheet">
+    <link href="__PUBLIC__/Css/sidebar.css" rel="stylesheet">
+    <link href="__PUBLIC__/Js/plugins/back_top/css/special.css" rel="stylesheet">
+    <link href="__PUBLIC__/Css/article.css" rel="stylesheet">
+    <link href="__PUBLIC__/Css/demo.css" rel="stylesheet">
+    <link href="__PUBLIC__/Css/life.css" rel="stylesheet">
+    <link href="__PUBLIC__/Css/search.css" rel="stylesheet">
+    <link href="__PUBLIC__/Css/guest.css" rel="stylesheet">
+
+    <link href="__PUBLIC__/Js/plugins/timeline/css/reset.css" rel="stylesheet">
+    <link href="__PUBLIC__/Js/plugins/timeline/css/timeline.css" rel="stylesheet">
+    <link href="__PUBLIC__/Css/style.css" rel="stylesheet">
+
+    <!-- 代码高亮 -->
+    <link href="__PUBLIC__/Js/plugins/highlight/styles/monokai-sublime.css" rel="stylesheet">
+  </head>   
+  <body ondragstart="return false;">
+  <nav class="navbar navbar-default">
+  <div class="container">
+    <!-- <div class="navbar-header">
+        <img alt="Brand" src="__PUBLIC__/Images/logo.png">
+    </div> -->
+
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand header-home" href="{:U('Home/Index/index')}">
+        <img alt="Brand" src="__PUBLIC__/Images/logo.png">
+      </a>
+    </div>
+
+    <div class="collapse navbar-collapse header-column" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <foreach name="header" item="v">
+          <li><a href="__MODULE__/Index/{$v.href}">{$v.name}</a></li>
+        </foreach>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+          <form action="{:U('Home/Search/keyword_search')}" method="post" onsubmit="return submitFn(this);">
+              <div class="search-wrapper">
+                  <div class="input-holder">
+                      <input type="text" class="search-input" name="value" placeholder="Type to search" />
+                      <button class="search-icon" type="submit" onclick="searchToggle(this, event);"><span></span></button>
+                  </div>
+                  <!--<span class="close" onclick="searchToggle(this, event);"></span>-->
+                  <div class="result-container">
+
+                  </div>
+              </div>
+          </form>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <script type="text/javascript">
+      function searchToggle(obj, evt){
+          var container = $(obj).closest('.search-wrapper');
+
+          if(!container.hasClass('active')){
+              container.addClass('active');
+              evt.preventDefault();
+          }
+          else if(container.hasClass('active') && $(obj).closest('.input-holder').length == 0){
+              container.removeClass('active');
+              // clear input
+              container.find('.search-input').val('');
+              // clear and hide result container when we press close
+              container.find('.result-container').fadeOut(100, function(){$(this).empty();});
+          }
+      }
+
+      function submitFn(obj){
+          debugger
+          var value = $(obj).find('.search-input').val().trim();
+
+          if(!value.length){
+//              _html = "请输入您要搜索的关键字";
+//              $(obj).find('.result-container').html('<span style="color:#FF9C9C;">' + _html + '</span>');
+//              $(obj).find('.result-container').fadeIn(100);
+//              setTimeout(function(){
+//                  $(obj).find('.result-container').html('');
+//                  $(obj).find('.result-container').fadeIn(100);
+//              },2000);
+              return false;
+          }else{
+              return true;
+          }
+      }
+  </script>
