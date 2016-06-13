@@ -29,63 +29,106 @@ class IndexController extends Controller {
         }
     }
 
-
-    /**-----------------------------------------------------------------------------------
-     * 接入公众号后操作
-     */
+    // 自定义接入后操作
     public function responseMsg(){
-        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+        //创建自定义菜单
+//    	echo $this->createMenu();
 
+        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+        /*extract post data*/
         if (!empty($postStr)){
             libxml_disable_entity_loader(true);
             $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
 
-            $fromUsername = $postObj->FromUserName;  //开发者微信号
-            $toUsername   = $postObj->ToUserName;    //发送方帐号（一个OpenID）
-            $keyword      = trim($postObj->Content); //用户关键字
-            $time         = time();                  //系统时间
-            $event        = $postObj->Event;         //获取事件类型
-            $msgType      = $postObj->MsgType;       //用户发送的消息类型
-            $eventKey     = $postObj->EventKey;      //与自定义菜单中的key的值
-            $Recognition  = $postObj->Recognition;   //语音识别消息内容
+            $fromUsername = $postObj->FromUserName;  /*开发者微信号*/
+            $toUsername   = $postObj->ToUserName;    /*发送方帐号（一个OpenID）*/
+            $keyword      = trim($postObj->Content); /*用户关键字*/
+            $time         = time();                  /*系统时间*/
+            $event        = $postObj->Event;         /*获取事件类型*/
+            $eventkey     = $postObj->EventKey;      /*获取事件关键字，对应报文key数据*/
+            $msgType      = $postObj->MsgType;       /*用户发送的消息类型*/
 
-            //创建自定义菜单
-            echo $this->create_menu();
+            $textTpl = "<xml>
+	                <ToUserName><![CDATA[%s]]></ToUserName>
+	                <FromUserName><![CDATA[%s]]></FromUserName>
+	                <CreateTime>%s</CreateTime>
+	                <MsgType><![CDATA[%s]]></MsgType>
+	                <Content><![CDATA[%s]]></Content>
+	                <FuncFlag>0</FuncFlag>
+	                </xml>";
 
-            //存入关注用户的基本信息
-            $this->user_save_message((string)$fromUsername);
+            //扫描带参数二维码，公众号做出响应(分为关注和未关注两种情况)
+//	        if($event == 'subscribe' && substr($eventkey, 0,8) == 'qrscene_'){
+//	        	//未关注扫描，关注后触发本事件
+//	        	//保存$eventkey的值区分不同二维码$eventkey = 'qrscene_生成二维码的数值'
+            $msgType    = "text";
+            $contentStr = "您之前未关注过本账号，并且扫描了带参数的二维码";
+            $resultStr  = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+            echo $resultStr;
+//	        }else if($event == 'SCAN'){
+//	        	$msgType    = "text";
+//			    $contentStr = "您之前关注过本账号，并且扫描了带参数的二维码";
+//			    $resultStr  = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+//			    echo $resultStr;
+//	        }
 
-            //订阅事件 subscribe(订阅)、unsubscribe(取消订阅)推送文本消息
-            if($event == 'subscribe'){
-                $msgType    = "text";
-                $contentStr = "欢迎关注救命稻草，回复123456获取信息\n1.文本消息\n2.图片消息\n3.语音消息\n4.视频消息\n5.音乐消息\n6.图文消息";
+            //接入多客服
+//	        if($keyword == '客服'){
+//	        	$textTpl = "<xml>
+//				    <ToUserName><![CDATA[%s]]></ToUserName>
+//				    <FromUserName><![CDATA[%s]]></FromUserName>
+//				    <CreateTime>%s</CreateTime>
+//				    <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+//				 	</xml>";
+//
+//			    $resultStr  = sprintf($textTpl, $fromUsername, $toUsername, $time);
+//			    echo $resultStr;
+//	        }
+            //大写CLICK
+//		    if($event == 'CLICK' && $eventkey == "cjzc"){
+//	            $msgType    = "text";
+//			    $contentStr = "敬请期待mo-微笑";
+//			    $resultStr  = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+//			    echo $resultStr;
+//		    }
+        }
+    }
 
-                //扫描参数二维码事件
-                if(substr($eventKey,0,8) == 'qrscene_'){
-                    $code = str_replace(qrscene_,'',$eventKey);
-                    $contentStr.= "\n您的关注方式是参数二维码,所属参数:".$code;
-                }
 
-                $data = array(
-                    'fromUsername' => $fromUsername,
-                    'toUsername'   => $toUsername,
-                    'time'         => $time,
-                    'msgType'      => $msgType,
-                    'contentStr'   => $contentStr
-                );
-
-                $this->send_user_message($data);
-            }
-
-            //接收用户消息
-//            if(isset($msgType)){
-//                switch ($msgType){
-//                    case 'text':       $msgType = "text"; $contentStr = "你的文本消息已经收到！^_^"; break;
-//                    case 'image':      $msgType = "text"; $contentStr = "你的图片已经收到！^_^"; break;
-//                    case 'voice':      $msgType = "text"; $contentStr = "你的语音已经收到！^_^"; break;
-//                    case 'shortvideo': $msgType = "text"; $contentStr = "你的小视频已经收到！^_^"; break;
-//                    case 'location':   $msgType = "text"; $contentStr = "你的地理位置已经收到！^_^"; break;
-//                    case 'link':       $msgType = "text"; $contentStr = "你的链接已经收到！^_^"; break;
+    /**-----------------------------------------------------------------------------------
+     * 接入公众号后操作
+     */
+//    public function responseMsg(){
+//        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+//
+//        if (!empty($postStr)){
+//            libxml_disable_entity_loader(true);
+//            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+//
+//            $fromUsername = $postObj->FromUserName;  //开发者微信号
+//            $toUsername   = $postObj->ToUserName;    //发送方帐号（一个OpenID）
+//            $keyword      = trim($postObj->Content); //用户关键字
+//            $time         = time();                  //系统时间
+//            $event        = $postObj->Event;         //获取事件类型
+//            $msgType      = $postObj->MsgType;       //用户发送的消息类型
+//            $eventKey     = $postObj->EventKey;      //与自定义菜单中的key的值
+//            $Recognition  = $postObj->Recognition;   //语音识别消息内容
+//
+//            //创建自定义菜单
+//            echo $this->create_menu();
+//
+//            //存入关注用户的基本信息
+//            $this->user_save_message((string)$fromUsername);
+//
+//            //订阅事件 subscribe(订阅)、unsubscribe(取消订阅)推送文本消息
+//            if($event == 'subscribe'){
+//                $msgType    = "text";
+//                $contentStr = "欢迎关注救命稻草，回复123456获取信息\n1.文本消息\n2.图片消息\n3.语音消息\n4.视频消息\n5.音乐消息\n6.图文消息";
+//
+//                //扫描参数二维码事件
+//                if(substr($eventKey,0,8) == 'qrscene_'){
+//                    $code = str_replace(qrscene_,'',$eventKey);
+//                    $contentStr.= "\n您的关注方式是参数二维码,所属参数:".$code;
 //                }
 //
 //                $data = array(
@@ -98,62 +141,84 @@ class IndexController extends Controller {
 //
 //                $this->send_user_message($data);
 //            }
-
-            //语音识别
-            if($msgType == 'voice' && isset($Recognition) && !empty($Recognition)){
-                $msgType    = "text";
-                $contentStr = $Recognition;
-                $data = array(
-                    'fromUsername' => $fromUsername,
-                    'toUsername'   => $toUsername,
-                    'time'         => $time,
-                    'msgType'      => $msgType,
-                    'contentStr'   => $contentStr
-                );
-                $this->send_user_message($data);
-            }
-
-            //$keyword关键字回复消息1.文本消息,2.图片消息,3.语音消息,4.视频消息,5.音乐消息,6.图文消息
-            if(isset($keyword)){
-                switch ($keyword){
-                    case '1':
-                        $msgType    = "text";
-                        $contentStr = "今天你很赞!!!";
-                        $data = array(
-                            'fromUsername' => $fromUsername,
-                            'toUsername'   => $toUsername,
-                            'time'         => $time,
-                            'msgType'      => $msgType,
-                            'contentStr'   => $contentStr
-                        ); break;
-                    case '2':; break;
-                    case '3':; break;
-                    case '4':; break;
-                    case '5':
-                        $msgType    = "music";
-                        $data = array(
-                            'fromUsername' => $fromUsername,
-                            'toUsername'   => $toUsername,
-                            'time'         => $time,
-                            'msgType'      => $msgType
-                        ); break;
-                    case '6':
-                        $msgType    = "news";
-                        $data = array(
-                            'fromUsername' => $fromUsername,
-                            'toUsername'   => $toUsername,
-                            'time'         => $time,
-                            'msgType'      => $msgType
-                        ); break;
-                }
-
-                $this->send_user_message($data);
-            }
-        }else {
-            echo "";
-            exit;
-        }
-    }
+//
+//            //接收用户消息
+////            if(isset($msgType)){
+////                switch ($msgType){
+////                    case 'text':       $msgType = "text"; $contentStr = "你的文本消息已经收到！^_^"; break;
+////                    case 'image':      $msgType = "text"; $contentStr = "你的图片已经收到！^_^"; break;
+////                    case 'voice':      $msgType = "text"; $contentStr = "你的语音已经收到！^_^"; break;
+////                    case 'shortvideo': $msgType = "text"; $contentStr = "你的小视频已经收到！^_^"; break;
+////                    case 'location':   $msgType = "text"; $contentStr = "你的地理位置已经收到！^_^"; break;
+////                    case 'link':       $msgType = "text"; $contentStr = "你的链接已经收到！^_^"; break;
+////                }
+////
+////                $data = array(
+////                    'fromUsername' => $fromUsername,
+////                    'toUsername'   => $toUsername,
+////                    'time'         => $time,
+////                    'msgType'      => $msgType,
+////                    'contentStr'   => $contentStr
+////                );
+////
+////                $this->send_user_message($data);
+////            }
+//
+//            //语音识别
+//            if($msgType == 'voice' && isset($Recognition) && !empty($Recognition)){
+//                $msgType    = "text";
+//                $contentStr = $Recognition;
+//                $data = array(
+//                    'fromUsername' => $fromUsername,
+//                    'toUsername'   => $toUsername,
+//                    'time'         => $time,
+//                    'msgType'      => $msgType,
+//                    'contentStr'   => $contentStr
+//                );
+//                $this->send_user_message($data);
+//            }
+//
+//            //$keyword关键字回复消息1.文本消息,2.图片消息,3.语音消息,4.视频消息,5.音乐消息,6.图文消息
+//            if(isset($keyword)){
+//                switch ($keyword){
+//                    case '1':
+//                        $msgType    = "text";
+//                        $contentStr = "今天你很赞!!!";
+//                        $data = array(
+//                            'fromUsername' => $fromUsername,
+//                            'toUsername'   => $toUsername,
+//                            'time'         => $time,
+//                            'msgType'      => $msgType,
+//                            'contentStr'   => $contentStr
+//                        ); break;
+//                    case '2':; break;
+//                    case '3':; break;
+//                    case '4':; break;
+//                    case '5':
+//                        $msgType    = "music";
+//                        $data = array(
+//                            'fromUsername' => $fromUsername,
+//                            'toUsername'   => $toUsername,
+//                            'time'         => $time,
+//                            'msgType'      => $msgType
+//                        ); break;
+//                    case '6':
+//                        $msgType    = "news";
+//                        $data = array(
+//                            'fromUsername' => $fromUsername,
+//                            'toUsername'   => $toUsername,
+//                            'time'         => $time,
+//                            'msgType'      => $msgType
+//                        ); break;
+//                }
+//
+//                $this->send_user_message($data);
+//            }
+//        }else {
+//            echo "";
+//            exit;
+//        }
+//    }
 
     /**-----------------------------------------------------------------------------------
      * 向用户发送消息
