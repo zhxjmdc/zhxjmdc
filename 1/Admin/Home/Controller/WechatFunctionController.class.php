@@ -126,36 +126,71 @@ class WechatFunctionController extends WechatCommonController{
      * 接入公众号后操作
      */
     public function responseMsg(){
+//        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+//
+//        if (!empty($postStr)){
+//            libxml_disable_entity_loader(true);
+//            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+//
+//            $fromUsername = $postObj->FromUserName;  //开发者微信号
+//            $toUsername   = $postObj->ToUserName;    //发送方帐号（一个OpenID）
+//            $keyword      = trim($postObj->Content); //用户关键字
+//            $time         = time();                  //系统时间
+//            $event        = $postObj->Event;         //获取事件类型
+//            $msgType      = $postObj->MsgType;       //用户发送的消息类型
+//            $eventKey     = $postObj->EventKey;      //与自定义菜单中的key的值
+//            $Recognition  = $postObj->Recognition;   //语音识别消息内容
+//
+//            $object = array(
+//                'fromUsername' => $fromUsername,
+//                'toUsername'   => $toUsername,
+//                'time'         => $time,
+//                'msgType'      => $msgType,
+//            );
+//
+//            //存入关注用户的基本信息
+//            $this->user_save_message((string)$fromUsername);
+//
+//            //订阅事件 subscribe(订阅)、unsubscribe(取消订阅)推送文本消息
+//            if($event == 'subscribe'){
+//                $contentStr = $this->response->get_auto_response();
+//                $this->send_user_text($object,$contentStr);
+//            }
+//        }else {
+//            echo "";
+//            exit;
+//        }
+        //get post data, May be due to the different environments
         $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
 
+        //extract post data
         if (!empty($postStr)){
+            /* libxml_disable_entity_loader is to prevent XML eXternal Entity Injection,
+               the best way is to check the validity of xml by yourself */
             libxml_disable_entity_loader(true);
             $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
-
-            $fromUsername = $postObj->FromUserName;  //开发者微信号
-            $toUsername   = $postObj->ToUserName;    //发送方帐号（一个OpenID）
-            $keyword      = trim($postObj->Content); //用户关键字
-            $time         = time();                  //系统时间
-            $event        = $postObj->Event;         //获取事件类型
-            $msgType      = $postObj->MsgType;       //用户发送的消息类型
-            $eventKey     = $postObj->EventKey;      //与自定义菜单中的key的值
-            $Recognition  = $postObj->Recognition;   //语音识别消息内容
-
-            $object = array(
-                'fromUsername' => $fromUsername,
-                'toUsername'   => $toUsername,
-                'time'         => $time,
-                'msgType'      => $msgType,
-            );
-
-            //存入关注用户的基本信息
-            $this->user_save_message((string)$fromUsername);
-
-            //订阅事件 subscribe(订阅)、unsubscribe(取消订阅)推送文本消息
-            if($event == 'subscribe'){
-                $contentStr = $this->response->get_auto_response();
-                $this->send_user_text($object,$contentStr);
+            $fromUsername = $postObj->FromUserName;
+            $toUsername = $postObj->ToUserName;
+            $keyword = trim($postObj->Content);
+            $time = time();
+            $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+            if(!empty( $keyword ))
+            {
+                $msgType = "text";
+                $contentStr = "Welcome to wechat world!";
+                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                echo $resultStr;
+            }else{
+                echo "Input something...";
             }
+
         }else {
             echo "";
             exit;
